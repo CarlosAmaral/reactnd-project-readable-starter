@@ -1,17 +1,16 @@
-const url = 'localhost:3001';
+const url = 'http://localhost:3001';
 const headers = {'Authorization': 'whatever-you-want'};
 
 
 /**
  * Get Categories
- * @private
+ * @returns {Promise<any>}
  */
 
-export const _getCategories = () => {
-
-    fetch(`${url}/categories`,
+export function getCategories() {
+    return fetch(`${url}/categories`,
         {method: 'GET', headers})
-        .then(res => res.text())
+        .then(res => res.json())
         .then(data => data)
         .catch(err => err);
-};
+}

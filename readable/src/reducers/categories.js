@@ -1,19 +1,14 @@
-import * as ReadablesAPI from '../utils/ReadablesAPI'
 import {ADD_CATEGORIES} from "../actions/types";
+import * as _ from 'lodash';
 
-export function addCategories(categories) {
-    return {
-        type: ADD_CATEGORIES,
-        categories
+export default function categories(state = [], action) {
+    let categories = state.categories ? state.categories.slice() : [];
+    switch (action.type) {
+        case ADD_CATEGORIES:
+            categories = _.union(categories, action.categories);
+            return Object.assign({}, state, {categories});
+        default:
+            return state;
     }
+
 }
-
-export const _fetchCategoriesFromApi = () => dispatch =>
-    new Promise((resolve) =>
-        ReadablesAPI._getCategories()
-            .then(({categories}) => {
-                dispatch(addCategories(categories));
-                resolve(categories);
-            })
-    );
-
