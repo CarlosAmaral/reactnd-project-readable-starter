@@ -8,14 +8,15 @@ import {_fetchCategoriesFromApi, sendCategories} from "./actions";
 import categories from "./reducers/categories";
 import {Redirect, Route, Switch} from "react-router-dom";
 import Homepage from "./components/Homepage";
+import {connect} from "react-redux";
 
 const {Header, Content, Footer} = Layout;
 
-export default class App extends Component {
+class App extends Component {
 
     componentDidMount() {
         store.dispatch(_fetchCategoriesFromApi()).then((categories) => {
-            console.log(categories, "categories");
+            this.props.sendCategories(categories);
         })
     }
 
@@ -40,8 +41,15 @@ export default class App extends Component {
     }
 }
 
+function mapStateToProps({categories}) {
+    return {
+    }
+}
+
 function mapDispatchToProps(dispatch) {
     return {
         sendCategories: (category) => dispatch(sendCategories(category))
     }
 }
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Layout, Menu, Breadcrumb } from 'antd';
 const { Header, Content, Footer } = Layout;
 
-class HeaderComponent extends Component {
+export default class HeaderComponent extends Component {
     render() {
         return (
             <div>
@@ -24,7 +24,3 @@ class HeaderComponent extends Component {
         );
     }
 }
-
-HeaderComponent.propTypes = {};
-
-export default HeaderComponent;

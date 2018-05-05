@@ -8,7 +8,7 @@ import registerServiceWorker from './registerServiceWorker';
 import WebFont from 'webfontloader';
 import {Provider} from "react-redux";
 import store from './store';
-import createHistory from 'history/createBrowserHistory';
+//import createHistory from 'history/createBrowserHistory';
 
 WebFont.load({
     google: {
@@ -16,9 +16,8 @@ WebFont.load({
     }
 });
 
-const history = createHistory();
+//const history = createHistory();
 
 ReactDOM.render(
-    <Provider store={store}><BrowserRouter
-        history={history}><App/></BrowserRouter></Provider>, document.getElementById('root'));
+    <Provider store={store}><BrowserRouter><App/></BrowserRouter></Provider>, document.getElementById('root'));
 registerServiceWorker();
