@@ -1,8 +1,9 @@
 import React, {Component} from 'react';
 import {Layout, Menu, Breadcrumb} from 'antd';
 import {connect} from "react-redux";
-import {sendCategories} from '../../actions';
+import {addPostsAction, sendCategories} from '../../actions';
 import _ from 'lodash';
+import {withRouter} from "react-router-dom";
 
 const {Header, Content, Footer} = Layout;
 
@@ -14,26 +15,25 @@ class Homepage extends Component {
     }
 
     render() {
-        let {categories} = this.props;
-        const {category} = _.size(this.props.category) > 0 ? this.props.category : {category: 'all'};
-        categories = categories || [];
+
         return (
             <div>
-                <div>{categories} blabla bla{categories}</div>
+                <div></div>
 
             </div>
         );
     }
 }
 
-function mapStateToProps({categories}) {
-    return Object.assign({}, categories);
+function mapStateToProps({posts}) {
+    return Object.assign({}, posts);
 }
 
 function mapDispatchToProps(dispatch) {
     return {
-        sendCategories: (category) => dispatch(sendCategories(category))
+        sendCategories: (category) => dispatch(sendCategories(category)),
+        addPosts: (posts) => dispatch(addPostsAction(posts))
     }
 }
 
-export default connect(mapDispatchToProps, mapStateToProps)(Homepage)
+export default withRouter(connect(mapDispatchToProps, mapStateToProps)(Homepage))

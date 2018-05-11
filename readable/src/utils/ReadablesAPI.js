@@ -14,3 +14,11 @@ export function getCategories() {
         .then(data => data)
         .catch(err => err);
 }
+
+export function getPosts() {
+    return fetch(`${url}/posts`, {method:'GET', headers})
+        .then(res => res.json())
+        .then(data => data)
+        .catch(err => err);
+
+}

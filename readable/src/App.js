@@ -4,9 +4,9 @@ import './App.css';
 import {Layout} from "antd";
 import HeaderComponent from "./components/Header";
 import store from './store';
-import {_fetchCategoriesFromApi, sendCategories} from "./actions";
+import {_fetchCategoriesFromApi, getPostsFromAPI, addPostsAction, sendCategories} from "./actions";
 import categories from "./reducers/categories";
-import {Redirect, Route, Switch} from "react-router-dom";
+import {Redirect, Route, Switch, withRouter} from "react-router-dom";
 import Homepage from "./components/Homepage";
 import {connect} from "react-redux";
 
@@ -17,7 +17,11 @@ class App extends Component {
     componentDidMount() {
         store.dispatch(_fetchCategoriesFromApi()).then((categories) => {
             this.props.sendCategories(categories);
-        })
+        });
+        store.dispatch(getPostsFromAPI()).then((posts) => {
+            console.log(posts, "POSTS")
+            this.props.addPosts(posts)
+        });
     }
 
     render() {
@@ -42,14 +46,14 @@ class App extends Component {
 }
 
 function mapStateToProps({categories}) {
-    return {
-    }
+    return {}
 }
 
 function mapDispatchToProps(dispatch) {
     return {
-        sendCategories: (category) => dispatch(sendCategories(category))
+        sendCategories: (category) => dispatch(sendCategories(category)),
+        addPosts: (posts) => dispatch(addPostsAction(posts))
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(App));
