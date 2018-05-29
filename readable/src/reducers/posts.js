@@ -6,7 +6,6 @@ export default function posts(state = {}, action) {
     switch (action.type) {
         case ADD_POSTS:
             posts = _.union(posts, action.posts);
-            console.log(posts, "what")
             return Object.assign({}, state, {posts});
         default:
             return state;

@@ -1,5 +1,6 @@
 {
   "dependencies": {
-    "lodash": "^4.17.10"
+    "lodash": "^4.17.10",
+    "react-loading-overlay": "^0.3.0"
   }
 }

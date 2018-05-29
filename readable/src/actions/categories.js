@@ -10,7 +10,7 @@ export function addCategories(categories) {
 
 export const _fetchCategoriesFromApi = () => dispatch =>
     new Promise((resolve) =>
-        ReadablesAPI.getCategories().then(({categories}) => {
+        ReadablesAPI.getCategoriesAPI().then(({categories}) => {
                 dispatch(addCategories(categories));
                 resolve(categories);
             })

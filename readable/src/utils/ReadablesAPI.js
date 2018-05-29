@@ -7,7 +7,7 @@ const headers = {'Authorization': 'whatever-you-want'};
  * @returns {Promise<any>}
  */
 
-export function getCategories() {
+export function getCategoriesAPI() {
     return fetch(`${url}/categories`,
         {method: 'GET', headers})
         .then(res => res.json())
@@ -15,7 +15,7 @@ export function getCategories() {
         .catch(err => err);
 }
 
-export function getPosts() {
+export function getPostsAPI() {
     return fetch(`${url}/posts`, {method:'GET', headers})
         .then(res => res.json())
         .then(data => data)

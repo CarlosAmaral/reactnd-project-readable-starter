@@ -10,7 +10,7 @@ export function addPostsAction({posts}) {
 
 export const getPostsFromAPI = () => dispatch => (
     new Promise((resolve) =>
-        ReadablesAPI.getPosts()
+        ReadablesAPI.getPostsAPI()
             .then(posts => {
                 dispatch(addPostsAction({posts}));
                 resolve(posts);
