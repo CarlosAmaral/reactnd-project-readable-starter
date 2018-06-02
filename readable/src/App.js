@@ -8,6 +8,8 @@ import {_fetchCategoriesFromApi, GET_POSTS, GET_CATEGORIES, getPostsAction, getC
 import categories from "./reducers/categories";
 import {Redirect, Route, Switch, withRouter} from "react-router-dom";
 import Homepage from "./components/Homepage";
+import {bindActionCreators} from 'redux';
+import * as actionCreators from './actions';
 import {connect} from "react-redux";
 import Loadable from 'react-loading-overlay';
 import * as ReadablesAPI from './utils/ReadablesAPI'
@@ -24,6 +26,8 @@ class App extends Component {
     }
 
     componentDidMount() {
+        this.props._fetchCategoriesFromApi();
+        this.props.getPostsFromAPI();
 
         let promises = [
             ReadablesAPI.getPostsAPI(),
@@ -68,12 +72,8 @@ class App extends Component {
 function mapStateToProps(state) {
     return {...state}
 }
-
 function mapDispatchToProps(dispatch) {
-    return {
-        getCategoriesAction: (category) => dispatch(getCategoriesAction(category)),
-        getPostsAction: (posts) => dispatch(getPostsAction(posts))
-    }
+    return bindActionCreators(actionCreators, dispatch);
 }
 
 

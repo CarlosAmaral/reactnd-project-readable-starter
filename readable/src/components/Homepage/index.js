@@ -17,14 +17,15 @@ class Homepage extends Component {
 
     render() {
         const {posts} = this.props;
-        console.log(posts, "props");
-        return ( "")
-/*        if (!posts){
+
+        const postsPayload = posts.posts.posts;
+        console.log(posts.posts.posts, "POSTS");
+        if (!postsPayload){
             return ("Loading")
-        } else if (posts){
+        } else if (postsPayload){
             return (
                 <div>
-                    {posts.map((item) => (
+                    {postsPayload.map((item) => (
 
                         <Card title={item.title} style={{width: 300}} extra={<Badge count={item.comments}>
                             <a href="#" className="head-example"/>
@@ -39,12 +40,12 @@ class Homepage extends Component {
                     ))}
                 </div>
             );
-        }*/
+        }
 
     }
 }
 
-function mapStateToProps ({ posts}) {
+function mapStateToProps (posts) {
     return {posts}
 }
 
