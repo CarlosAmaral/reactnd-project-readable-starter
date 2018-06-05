@@ -12,6 +12,9 @@ export function getCategoriesAction({categories}) {
 //posts
 export const ADD_POSTS = 'ADD_POSTS';
 export const GET_POSTS = 'GET_POSTS';
+export const THUMBSUP_POST = 'THUMBSUP_POST';
+export const THUMBSDOWN_POST = 'THUMBSDOWN_POST';
+
 
 export function getPostsAction({posts}) {
     return {type: GET_POSTS, posts};

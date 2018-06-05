@@ -1,43 +1,101 @@
 import React, {Component} from 'react';
-import {Layout, Menu, Breadcrumb, Card, Badge, Tag} from 'antd';
+import {Layout, Menu, Breadcrumb, Card, Badge, Tag, Row, Col, Divider, Button, Popover, Input} from 'antd';
 import {connect} from "react-redux";
-import {addPostsAction, sendCategories} from '../../actions';
+import {addPostsAction, sendCategories, postThumbsupFromAPI} from '../../actions';
 import _ from 'lodash';
 import {withRouter} from "react-router-dom";
 import PropTypes from 'prop-types';
+import {bindActionCreators} from "redux";
+import * as actionCreators from "../../actions";
+
 const {Header, Content, Footer} = Layout;
 
 
 class Homepage extends Component {
     constructor(props) {
         super(props);
-        console.log(props, "props");
+        this.state = {
+            visible: false,
+        }
+
     }
 
+    hide = () => {
+        this.setState({
+            visible: false,
+        });
+    };
 
+    handleVisibleChange = (visible) => {
+        this.setState({visible});
+    }
+
+    submitComment = () => {
+
+    };
+
+    thumbsUpPost = (key) => {
+        console.log(key, "KEY");
+        this.props.postThumbsupFromAPI(key);
+    }
     render() {
         const {posts} = this.props;
-
         const postsPayload = posts.posts.posts;
-        console.log(posts.posts.posts, "POSTS");
-        if (!postsPayload){
+
+        if (!postsPayload) {
             return ("Loading")
-        } else if (postsPayload){
+        }
+
+        else if (postsPayload) {
             return (
                 <div>
-                    {postsPayload.map((item) => (
+                    <Row gutter={24}>
+                        {postsPayload.map((item) => (
+                            <Col span={12} key={item.id}>
+                                <Card title={item.title} extra={<div>
+                                    <Badge count={item.comments}>
+                                    </Badge>
+                                </div>}>
+                                    {item.body}
 
-                        <Card title={item.title} style={{width: 300}} extra={<Badge count={item.comments}>
-                            <a href="#" className="head-example"/>
-                        </Badge>}>
-                            {item.body}
+                                    <Divider/>
 
-                            Author: {item.author}
+                                    <Row>
+                                        <Col span={8}>
+                                            <strong>Author:</strong> {item.author}
+                                        </Col>
+                                        <Col span={8}>
+                                            <strong>Votes:</strong>{item.voteScore}
+                                        </Col>
+                                        <Col span={8}>
+                                            <strong>Category:</strong>{item.category}
+                                        </Col>
+                                    </Row>
 
-                            votes:
-                            <Tag>{item.category}</Tag>
-                        </Card>
-                    ))}
+                                    <Divider/>
+                                    <Row>
+                                        <Col span={12}>
+                                            <Button  icon="minus-circle"/>
+                                            <Button onClick={() => this.thumbsUpPost(item.id)} icon="plus-circle"/>
+                                        </Col>
+                                        <Col span={8}>
+                                            <Popover
+                                                content={<div>
+                                                    <Input placeholder="Basic usage"/> <Button type="primary"
+                                                                                               htmlType="button"
+                                                                                               onClick={this.submitComment}>Submit</Button>
+                                                </div>}
+                                                title="Comment this post!"
+                                                visible={this.state.visible}
+                                                onVisibleChange={this.handleVisibleChange}>
+                                                <Button htmlType="button">Comment!</Button>
+                                            </Popover>
+                                        </Col>
+                                    </Row>
+                                </Card>
+                            </Col>
+                        ))}
+                    </Row>
                 </div>
             );
         }
@@ -45,15 +103,12 @@ class Homepage extends Component {
     }
 }
 
-function mapStateToProps (posts) {
+function mapStateToProps(posts) {
     return {posts}
 }
 
-/*function mapDispatchToProps(dispatch) {
-    return null/!*{
-        sendCategories: (category) => dispatch(sendCategories(category)),
-        addPosts: (posts) => dispatch(addPostsAction(posts))
-    }*!/
-}*/
+function mapDispatchToProps(dispatch) {
+    return bindActionCreators(actionCreators, dispatch);
+}
 
-export default withRouter(connect(mapStateToProps)(Homepage));
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Homepage));
