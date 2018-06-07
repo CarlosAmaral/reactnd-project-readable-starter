@@ -13,6 +13,7 @@ import * as actionCreators from './actions';
 import {connect} from "react-redux";
 import Loadable from 'react-loading-overlay';
 import * as ReadablesAPI from './utils/ReadablesAPI'
+import CreatePostsComponent from "./components/CreatePostsComponent";
 
 const {Header, Content, Footer} = Layout;
 
@@ -60,6 +61,9 @@ class App extends Component {
                                 <Route path='/' exact render={() => (
                                     <Homepage/>
                                 )}/>
+                                <Route path='/create-post' exact render={() => (
+                                    <CreatePostsComponent/>
+                                )}/>
                             </Switch>
                         </Content>
                     </Layout>
@@ -72,6 +76,7 @@ class App extends Component {
 function mapStateToProps(state) {
     return {...state}
 }
+
 function mapDispatchToProps(dispatch) {
     return bindActionCreators(actionCreators, dispatch);
 }

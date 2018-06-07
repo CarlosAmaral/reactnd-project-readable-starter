@@ -35,9 +35,14 @@ class Homepage extends Component {
     };
 
     thumbsUpPost = (key) => {
-        console.log(key, "KEY");
         this.props.postThumbsupFromAPI(key);
-    }
+    };
+
+    thumbsDownPost = (key) => {
+        this.props.postThumbsdownFromAPI(key);
+    };
+
+
     render() {
         const {posts} = this.props;
         const postsPayload = posts.posts.posts;
@@ -75,7 +80,7 @@ class Homepage extends Component {
                                     <Divider/>
                                     <Row>
                                         <Col span={12}>
-                                            <Button  icon="minus-circle"/>
+                                            <Button onClick={() => this.thumbsDownPost(item.id)} icon="minus-circle"/>
                                             <Button onClick={() => this.thumbsUpPost(item.id)} icon="plus-circle"/>
                                         </Col>
                                         <Col span={8}>

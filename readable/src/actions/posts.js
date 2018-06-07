@@ -24,11 +24,20 @@ export const postThumbsupFromAPI = (key) => dispatch => (
             }))
 );
 
+export const postThumbsdownFromAPI = (key) => dispatch => (
+    new Promise((resolve) =>
+        ReadablesAPI.thumbsdownPostAPI(key)
+            .then(posts => {
+                dispatch(thumbdownPost({key}));
+                resolve(posts);
+            }))
+);
+
 
 export const thumbdownPost = ({key}) => {
 
     return {type: THUMBSDOWN_POST, key};
-}
+};
 
 
 

@@ -12,7 +12,7 @@ import store from './store';
 
 WebFont.load({
     google: {
-        families: ['Raleway']
+        families: ['Lato']
     }
 });
 
