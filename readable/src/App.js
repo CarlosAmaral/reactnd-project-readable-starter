@@ -35,7 +35,6 @@ class App extends Component {
             ReadablesAPI.getCategoriesAPI()
         ];
 
-
         Promise.all(promises).then(res => {
             if (res) {
                 const posts = res[0];
@@ -49,9 +48,10 @@ class App extends Component {
     }
 
     render() {
+        const {isLoading} = this.state;
         return (
             <Loadable
-                active={this.state.isLoading}
+                active={isLoading}
                 spinner>
                 <div className="App">
                     <Layout>

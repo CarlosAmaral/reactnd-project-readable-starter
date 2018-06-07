@@ -108,8 +108,8 @@ class Homepage extends Component {
     }
 }
 
-function mapStateToProps(posts) {
-    return {posts}
+function mapStateToProps({posts, categories}) {
+    return {posts: posts, categories: categories}
 }
 
 function mapDispatchToProps(dispatch) {

@@ -7,7 +7,7 @@ const headers = {
     'Authorization': 'whatever-you-want'
 };
 
-const result = helpers.guid();
+//const result = helpers.guid();
 
 /**
  * Get Categories
