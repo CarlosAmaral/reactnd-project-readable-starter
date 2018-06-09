@@ -4,7 +4,7 @@ const url = 'http://localhost:3001';
 const headers = {
     'Accept': 'application/json',
     'Content-Type': 'application/json',
-    'Authorization': 'whatever-you-want'
+    'Authorization': 'F7t0Bb2tJk'
 };
 
 //const result = helpers.guid();
@@ -23,6 +23,13 @@ export function getCategoriesAPI() {
 
 export function getPostsAPI() {
     return fetch(`${url}/posts`, {method: 'GET', headers})
+        .then(res => res.json())
+        .catch(err => err);
+
+}
+
+export function createPostsAPI(values) {
+    return fetch(`${url}/posts`, {method: 'POST', body: JSON.stringify(values), headers})
         .then(res => res.json())
         .catch(err => err);
 

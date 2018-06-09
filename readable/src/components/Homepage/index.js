@@ -44,18 +44,17 @@ class Homepage extends Component {
 
 
     render() {
-        const {posts} = this.props;
-        const postsPayload = posts.posts.posts;
+        const {posts} = this.props.posts.posts;
 
-        if (!postsPayload) {
+        if (!posts) {
             return ("Loading")
         }
 
-        else if (postsPayload) {
+        else if (posts) {
             return (
                 <div>
                     <Row gutter={24}>
-                        {postsPayload.map((item) => (
+                        {posts.map((item) => (
                             <Col span={12} key={item.id}>
                                 <Card title={item.title} extra={<div>
                                     <Badge count={item.comments}>
@@ -108,7 +107,7 @@ class Homepage extends Component {
     }
 }
 
-function mapStateToProps({posts, categories}) {
+function mapStateToProps(posts, categories) {
     return {posts: posts, categories: categories}
 }
 
