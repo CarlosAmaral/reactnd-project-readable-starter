@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Layout, Menu, Breadcrumb, Card, Badge, Tag, Row, Col, Divider, Button, Popover, Input} from 'antd';
+import {Layout, Menu, Breadcrumb, Card, Badge, Tag, Row, Col, Divider, Button, Popover, Input, Icon} from 'antd';
 import {connect} from "react-redux";
 import {addPostsAction, sendCategories, postThumbsupFromAPI} from '../../actions';
 import _ from 'lodash';
@@ -79,15 +79,19 @@ class Homepage extends Component {
                                     <Divider/>
                                     <Row>
                                         <Col span={12}>
-                                            <Button onClick={() => this.thumbsDownPost(item.id)} icon="minus-circle"/>
-                                            <Button onClick={() => this.thumbsUpPost(item.id)} icon="plus-circle"/>
+                                            <div style={{display: 'flex', marginLeft: '50px'}}>
+                                                <Icon onClick={() => this.thumbsDownPost(item.id)} type="dislike-o"
+                                                      style={{cursor: 'pointer', fontSize: '20px'}}/>
+                                                <Icon onClick={() => this.thumbsUpPost(item.id)} type="like-o"
+                                                      style={{cursor: 'pointer', fontSize: '20px', paddingLeft: '15px'}}/>
+                                            </div>
                                         </Col>
                                         <Col span={8}>
                                             <Popover
                                                 content={<div>
-                                                    <Input placeholder="Basic usage"/> <Button type="primary"
-                                                                                               htmlType="button"
-                                                                                               onClick={this.submitComment}>Submit</Button>
+                                                    <Input placeholder="Basic usage"/>
+                                                    <Button type="primary" htmlType="button"
+                                                            onClick={this.submitComment}>Submit</Button>
                                                 </div>}
                                                 title="Comment this post!"
                                                 visible={this.state.visible}

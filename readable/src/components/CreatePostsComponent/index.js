@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import {Button, Select, Form, Input, Row, Col} from "antd";
+import {Button, Select, Form, Input, Row, Col, List, Icon} from "antd";
 import {bindActionCreators} from "redux";
 import * as actionCreators from "../../actions";
 import {withRouter} from "react-router-dom";
@@ -14,11 +14,18 @@ const Option = Select.Option;
 
 class CreatePostsComponent extends Component {
 
+    constructor(props) {
+        super(props);
+        this.state = {
+            editMode: false
+
+        }
+    }
+
     handleSubmit = (e) => {
         e.preventDefault();
         this.props.form.validateFields((err, values) => {
             if (!err) {
-
                 let payload = {
                     id: helpers.guid(),
                     timestamp: new Date(),
@@ -28,19 +35,41 @@ class CreatePostsComponent extends Component {
                     voteScore: 1,
                     category: values.category
                 };
-
                 ReadablesAPI.createPostsAPI(payload);
-
-                console.log('Received values of form: ', values);
             }
         });
+    };
+
+    editPost = (id) => {
+        const {posts} = this.props.posts.posts;
+        const item = posts.find(f => f.id === id);
+        if (item) {
+            this.props.form.setFieldsValue({
+                title: item.title,
+                body: item.body,
+                author: item.author,
+                category: item.category
+            })
+            this.setState({
+                editMode: true
+            })
+        }
+    };
+
+    cancelEditMode = () => {
+        this.props.form.resetFields();
+        this.setState({
+            editMode: false
+        })
     };
 
     render() {
 
         const {getFieldDecorator} = this.props.form;
 
+        const {editMode} = this.state;
         const {categories} = this.props.posts.categories;
+        const {posts} = this.props.posts.posts;
 
         if (!categories) {
             return ("Loading")
@@ -49,8 +78,24 @@ class CreatePostsComponent extends Component {
         else if (categories) {
             return (
                 <div>
-                    <Row type="flex" align="center">
-                        <Col>
+                    <Row gutter={48} type="flex" align="start">
+                        <Col span={8}>
+                            <h4 type="primary">Available Posts</h4>
+                            <List
+                                itemLayout="horizontal"
+                                dataSource={posts}
+                                renderItem={item => (
+                                    <List.Item actions={[<a onClick={() => this.editPost(item.id)}>EDIT</a>]}>
+                                        <List.Item.Meta
+                                            title={item.title}
+                                            description={item.body}
+                                        />
+                                    </List.Item>
+                                )}
+                            />
+                        </Col>
+                        <Col span={14}>
+                            <h4 type="primary">Create Posts</h4>
                             <Form onSubmit={this.handleSubmit} className="login-form">
                                 <FormItem>
                                     {getFieldDecorator('title', {
@@ -77,7 +122,7 @@ class CreatePostsComponent extends Component {
                                     {getFieldDecorator('category', {
                                         rules: [{required: true, message: 'Please select a category'}],
                                     })(
-                                        <Select style={{width: 120}}>
+                                        <Select placeholder="Select Category">
                                             {categories.map(item =>
                                                 <Option key={item.name} value={item.name}>{item.name}</Option>
                                             )}
@@ -85,7 +130,18 @@ class CreatePostsComponent extends Component {
                                     )}
 
                                 </FormItem>
-                                <Button htmlType="submit">Create Post</Button>
+
+                                {editMode &&
+                                <div>
+                                    <Button htmlType="submit" type="primary">Edit Post</Button>
+                                    <Button htmlType="button" onClick={this.cancelEditMode}
+                                            type="default">Cancel</Button>
+                                </div>
+                                }
+                                {!editMode &&
+                                <Button htmlType="submit" type="primary">Create Post</Button>
+                                }
+
                             </Form>
                         </Col>
                     </Row>

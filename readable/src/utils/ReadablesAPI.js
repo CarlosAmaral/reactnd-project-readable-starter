@@ -1,5 +1,3 @@
-import * as helpers from '../utils/helpers';
-
 const url = 'http://localhost:3001';
 const headers = {
     'Accept': 'application/json',
@@ -7,7 +5,6 @@ const headers = {
     'Authorization': 'F7t0Bb2tJk'
 };
 
-//const result = helpers.guid();
 
 /**
  * Get Categories
@@ -21,6 +18,11 @@ export function getCategoriesAPI() {
         .catch(err => err);
 }
 
+/**
+ * GET POSTS
+ * @returns {Promise<Response>}
+ */
+
 export function getPostsAPI() {
     return fetch(`${url}/posts`, {method: 'GET', headers})
         .then(res => res.json())
@@ -28,15 +30,55 @@ export function getPostsAPI() {
 
 }
 
+
+/**
+ * CREATE POSTS
+ * @param values
+ * @returns {Promise<Response>}
+ */
+
 export function createPostsAPI(values) {
-    return fetch(`${url}/posts`, {method: 'POST', body: JSON.stringify(values), headers})
+    return fetch(`${url}/posts`, {method: 'POST',
+        body: JSON.stringify(values), headers})
         .then(res => res.json())
         .catch(err => err);
 
 }
 
-export function thumbsupPostAPI(key) {
+/**
+ * EDIT POSTS
+ * @param values
+ * @returns {Promise<Response>}
+ */
 
+export function editPostsAPI(values) {
+    return fetch(`${url}/posts`, {method: 'PUT',
+        body: JSON.stringify(values), headers})
+        .then(res => res.json())
+        .catch(err => err);
+
+}
+
+/**
+ * DELETE POSTS
+ * @param key
+ * @returns {Promise<Response>}
+ */
+
+export function deletePostsAPI(key) {
+    return fetch(`${url}/posts/${key}`, {method: 'DELETE',headers})
+        .then(res => res.json())
+        .catch(err => err);
+
+}
+
+/**
+ * UPVOTE POST
+ * @param key
+ * @returns {Promise<Response>}
+ */
+
+export function thumbsupPostAPI(key) {
     return fetch(`${url}/posts/${key}`, {
         method: 'POST', headers,
         body: JSON.stringify({
@@ -46,6 +88,12 @@ export function thumbsupPostAPI(key) {
         .catch(err => err);
 
 }
+
+/**
+ * DOWNVOTE POST
+ * @param key
+ * @returns {Promise<Response>}
+ */
 
 export function thumbsdownPostAPI(key) {
 
