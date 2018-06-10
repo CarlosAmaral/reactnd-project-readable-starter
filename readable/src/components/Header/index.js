@@ -18,8 +18,8 @@ export default class HeaderComponent extends Component {
                         style={{lineHeight: '64px'}}
                     >
                         <Menu.Item key="1"><Link to='/'>Homepage</Link></Menu.Item>
-                        <Menu.Item key="2"><Link to='/create-post'>Create Post</Link></Menu.Item>
-                        <Menu.Item key="3">nav 3</Menu.Item>
+                        <Menu.Item key="2"><Link to='/:category'>Category List</Link></Menu.Item>
+                        <Menu.Item key="3"><Link to='/edit-create-post'>Edit/Create Post</Link></Menu.Item>
                     </Menu>
                 </Header>
             </div>

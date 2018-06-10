@@ -14,6 +14,7 @@ import {connect} from "react-redux";
 import Loadable from 'react-loading-overlay';
 import * as ReadablesAPI from './utils/ReadablesAPI'
 import CreatePostsComponent from "./components/CreatePostsComponent";
+import {PostDetailComponent} from "./components/PostDetailComponent";
 
 const {Header, Content, Footer} = Layout;
 
@@ -61,8 +62,11 @@ class App extends Component {
                                 <Route path='/' exact render={() => (
                                     <Homepage/>
                                 )}/>
-                                <Route path='/create-post' exact render={() => (
+                                <Route path='/edit-create-post' exact render={() => (
                                     <CreatePostsComponent/>
+                                )}/>
+                                <Route path='/view-more/:post_id' exact render={() => (
+                                    <PostDetailComponent/>
                                 )}/>
                             </Switch>
                         </Content>

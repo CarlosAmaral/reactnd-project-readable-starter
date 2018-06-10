@@ -38,8 +38,10 @@ export function getPostsAPI() {
  */
 
 export function createPostsAPI(values) {
-    return fetch(`${url}/posts`, {method: 'POST',
-        body: JSON.stringify(values), headers})
+    return fetch(`${url}/posts`, {
+        method: 'POST',
+        body: JSON.stringify(values), headers
+    })
         .then(res => res.json())
         .catch(err => err);
 
@@ -51,12 +53,15 @@ export function createPostsAPI(values) {
  * @returns {Promise<Response>}
  */
 
-export function editPostsAPI(values) {
-    return fetch(`${url}/posts`, {method: 'PUT',
-        body: JSON.stringify(values), headers})
-        .then(res => res.json())
+export function editPostsAPI(values, post_id) {
+    return fetch(`${url}/posts/${post_id}`, {
+        method: 'PUT',
+        body: JSON.stringify({
+            body: values.body,
+            title: values.title
+        }), headers
+    }).then(res => res.json())
         .catch(err => err);
-
 }
 
 /**
@@ -66,7 +71,7 @@ export function editPostsAPI(values) {
  */
 
 export function deletePostsAPI(key) {
-    return fetch(`${url}/posts/${key}`, {method: 'DELETE',headers})
+    return fetch(`${url}/posts/${key}`, {method: 'DELETE', headers})
         .then(res => res.json())
         .catch(err => err);
 

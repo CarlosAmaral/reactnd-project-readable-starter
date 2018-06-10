@@ -3,7 +3,7 @@ import {Layout, Menu, Breadcrumb, Card, Badge, Tag, Row, Col, Divider, Button, P
 import {connect} from "react-redux";
 import {addPostsAction, sendCategories, postThumbsupFromAPI} from '../../actions';
 import _ from 'lodash';
-import {withRouter} from "react-router-dom";
+import {Link, withRouter} from "react-router-dom";
 import PropTypes from 'prop-types';
 import {bindActionCreators} from "redux";
 import * as actionCreators from "../../actions";
@@ -56,12 +56,8 @@ class Homepage extends Component {
                     <Row gutter={24}>
                         {posts.map((item) => (
                             <Col span={12} key={item.id}>
-                                <Card title={item.title} extra={<div>
-                                    <Badge count={item.comments}>
-                                    </Badge>
-                                </div>}>
+                                <Card title={item.title} extra={<Link to={`/view-more/${item.id}`}>View More</Link>}>
                                     {item.body}
-
                                     <Divider/>
 
                                     <Row>
@@ -83,7 +79,11 @@ class Homepage extends Component {
                                                 <Icon onClick={() => this.thumbsDownPost(item.id)} type="dislike-o"
                                                       style={{cursor: 'pointer', fontSize: '20px'}}/>
                                                 <Icon onClick={() => this.thumbsUpPost(item.id)} type="like-o"
-                                                      style={{cursor: 'pointer', fontSize: '20px', paddingLeft: '15px'}}/>
+                                                      style={{
+                                                          cursor: 'pointer',
+                                                          fontSize: '20px',
+                                                          paddingLeft: '15px'
+                                                      }}/>
                                             </div>
                                         </Col>
                                         <Col span={8}>

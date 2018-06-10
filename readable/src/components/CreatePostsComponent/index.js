@@ -17,27 +17,40 @@ class CreatePostsComponent extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            editMode: false
+            editMode: false,
+            editPostId: null
 
         }
     }
 
     handleSubmit = (e) => {
         e.preventDefault();
-        this.props.form.validateFields((err, values) => {
-            if (!err) {
+
+        if (this.state.editMode) {
+            this.props.form.validateFields((err, values) => {
                 let payload = {
-                    id: helpers.guid(),
-                    timestamp: new Date(),
                     title: values.title,
-                    body: values.body,
-                    author: values.author,
-                    voteScore: 1,
-                    category: values.category
+                    body: values.body
                 };
-                ReadablesAPI.createPostsAPI(payload);
-            }
-        });
+                return ReadablesAPI.editPostsAPI(payload, this.state.editPostId);
+            });
+        }
+
+        if (!this.state.editMode)
+            this.props.form.validateFields((err, values) => {
+                if (!err) {
+                    let payload = {
+                        id: helpers.guid(),
+                        timestamp: new Date(),
+                        title: values.title,
+                        body: values.body,
+                        author: values.author,
+                        voteScore: 1,
+                        category: values.category
+                    };
+                    return ReadablesAPI.createPostsAPI(payload);
+                }
+            });
     };
 
     editPost = (id) => {
@@ -49,8 +62,9 @@ class CreatePostsComponent extends Component {
                 body: item.body,
                 author: item.author,
                 category: item.category
-            })
+            });
             this.setState({
+                editPostId: item.id,
                 editMode: true
             })
         }
