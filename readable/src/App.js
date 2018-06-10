@@ -14,7 +14,7 @@ import {connect} from "react-redux";
 import Loadable from 'react-loading-overlay';
 import * as ReadablesAPI from './utils/ReadablesAPI'
 import CreatePostsComponent from "./components/CreatePostsComponent";
-import {PostDetailComponent} from "./components/PostDetailComponent";
+import PostDetailComponent from "./components/PostDetailComponent";
 
 const {Header, Content, Footer} = Layout;
 

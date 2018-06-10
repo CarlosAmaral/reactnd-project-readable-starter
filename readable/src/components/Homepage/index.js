@@ -19,21 +19,6 @@ class Homepage extends Component {
         }
 
     }
-
-    hide = () => {
-        this.setState({
-            visible: false,
-        });
-    };
-
-    handleVisibleChange = (visible) => {
-        this.setState({visible});
-    }
-
-    submitComment = () => {
-
-    };
-
     thumbsUpPost = (key) => {
         this.props.postThumbsupFromAPI(key);
     };
@@ -85,19 +70,6 @@ class Homepage extends Component {
                                                           paddingLeft: '15px'
                                                       }}/>
                                             </div>
-                                        </Col>
-                                        <Col span={8}>
-                                            <Popover
-                                                content={<div>
-                                                    <Input placeholder="Basic usage"/>
-                                                    <Button type="primary" htmlType="button"
-                                                            onClick={this.submitComment}>Submit</Button>
-                                                </div>}
-                                                title="Comment this post!"
-                                                visible={this.state.visible}
-                                                onVisibleChange={this.handleVisibleChange}>
-                                                <Button htmlType="button">Comment!</Button>
-                                            </Popover>
                                         </Col>
                                     </Row>
                                 </Card>

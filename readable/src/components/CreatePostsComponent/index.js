@@ -109,7 +109,7 @@ class CreatePostsComponent extends Component {
                             />
                         </Col>
                         <Col span={14}>
-                            <h4 type="primary">Create Posts</h4>
+                            <h4 type="primary">Edit/Create Posts</h4>
                             <Form onSubmit={this.handleSubmit} className="login-form">
                                 <FormItem>
                                     {getFieldDecorator('title', {

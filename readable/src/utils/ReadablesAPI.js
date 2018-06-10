@@ -30,6 +30,18 @@ export function getPostsAPI() {
 
 }
 
+/**
+ * GET SINGLE POST
+ * @returns {Promise<Response>}
+ */
+
+export function getSinglePostAPI(post_id) {
+    return fetch(`${url}/posts/${post_id}`, {method: 'GET', headers})
+        .then(res => res.json())
+        .catch(err => err);
+
+}
+
 
 /**
  * CREATE POSTS
@@ -44,7 +56,6 @@ export function createPostsAPI(values) {
     })
         .then(res => res.json())
         .catch(err => err);
-
 }
 
 /**
@@ -111,3 +122,81 @@ export function thumbsdownPostAPI(key) {
         .catch(err => err);
 
 }
+
+//START OF ///////////////* COMMENTS */////////////////////////
+
+/**
+ * GET COMMENT BY ID
+ * @param comment_id
+ * @returns {Promise<Response>}
+ */
+
+export function getCommentsAPI(comment_id) {
+    return fetch(`${url}/comments/${comment_id}`, {
+        method: 'GET', headers
+    }).then(res => res.json())
+        .catch(err => err);
+}
+
+/**
+ * UPVOTE COMMENT
+ * @param comment_id
+ * @returns {Promise<Response>}
+ */
+
+export function thumbsUpCommentsAPI(comment_id) {
+    return fetch(`${url}/comments/${comment_id}`, {
+        method: 'POST', headers, body: JSON.stringify({
+            option: 'upVote'
+        })
+    }).then(res => res.json())
+        .catch(err => err);
+}
+
+/**
+ * DOWNVOTE COMMENT
+ * @param comment_id
+ * @returns {Promise<Response>}
+ */
+
+export function thumbsDownCommentsAPI(comment_id) {
+    return fetch(`${url}/comments/${comment_id}`, {
+        method: 'POST', headers, body: JSON.stringify({
+            option: 'downVote'
+        })
+    }).then(res => res.json())
+        .catch(err => err);
+}
+
+/**
+ * EDIT COMMENT
+ * @param body
+ * @param comment_id
+ * @returns {Promise<Response>}
+ */
+export function editCommentsAPI(values, comment_id) {
+    return fetch(`${url}/comments/${comment_id}`, {
+        method: 'PUT', headers, body: JSON.stringify({
+            body: values.body,
+            timestamp: values.timestamp
+        })
+    }).then(res => res.json())
+        .catch(err => err);
+}
+
+/**
+ * DELETE COMMENT
+ * @param comment_id
+ * @returns {Promise<Response>}
+ */
+export function deleteCommentsAPI(comment_id) {
+    return fetch(`${url}/comments/${comment_id}`, {
+        method: 'DELETE', headers, body: JSON.stringify({
+            deleted: true
+        })
+    }).then(res => res.json())
+        .catch(err => err);
+}
+
+
+
