@@ -5,8 +5,15 @@ import {bindActionCreators} from "redux";
 import {withRouter} from "react-router-dom";
 import * as ReadablesAPI from '../../utils/ReadablesAPI'
 import {Button, Card, Col, Divider, Form, Input, List, message, Popover, Row} from "antd";
+import moment from 'moment'
+import {Select} from "antd/lib/index";
+import * as helpers from "../../utils/helpers";
 
-const {FormItem} = Form.Item;
+const dateFormat = 'MM/DD/YYYY';
+
+const FormItem = Form.Item;
+const {TextArea} = Input;
+const Option = Select.Option;
 
 class PostDetailComponent extends Component {
     constructor(props) {
@@ -14,7 +21,9 @@ class PostDetailComponent extends Component {
         this.state = {
             singlePost: {},
             visible: false,
-            singlePostComments:[]
+            isEditMode: false,
+            singlePostComments: [],
+            isCommentMode: false
         }
     }
 
@@ -24,7 +33,7 @@ class PostDetailComponent extends Component {
 
         let promises = [
             ReadablesAPI.getSinglePostAPI(post_id),
-            ReadablesAPI.getCommentsAPI(post_id)
+            ReadablesAPI.getCommentsAPI(post_id),
         ];
 
         Promise.all(promises).then(res => {
@@ -38,8 +47,37 @@ class PostDetailComponent extends Component {
 
     }
 
-    editPost = (post_id) => {
+    handleSubmitComment = (e, post_id) => {
+        e.preventDefault();
 
+        this.props.form.validateFields((err, values) => {
+            let payload = {
+                id: helpers.guid(),
+                timestamp: new Date(),
+                body: values.body,
+                author: values.author,
+                parentId: post_id
+            };
+            message.success('The post has been edited successfully');
+            return ReadablesAPI.createCommentsAPI(payload);
+        });
+    };
+
+    editPost = (id) => {
+        const {posts} = this.props.posts.posts;
+        const item = posts.find(f => f.id === id);
+        if (item) {
+            this.props.form.setFieldsValue({
+                title: item.title,
+                body: item.body,
+                author: item.author,
+                category: item.category
+            });
+            this.setState({
+                editPostId: item.id,
+                editMode: true
+            })
+        }
     };
     deletePost = (post_id) => {
         ReadablesAPI.deletePostsAPI(post_id).then(res => {
@@ -49,15 +87,27 @@ class PostDetailComponent extends Component {
         })
     };
 
-    submitComment = (post_id) => {
-
+    commentPost = (bool) => {
+        this.setState({isCommentMode: bool})
     }
 
+    /*
+        handleVisibleChange = (visible) => {
+            this.setState({visible});
+        }
+    */
 
-    handleVisibleChange = (visible) => {
-        this.setState({visible});
-    }
-
+    handleSubmit = (e) => {
+        e.preventDefault();
+        this.props.form.validateFields((err, values) => {
+            let payload = {
+                title: values.title,
+                body: values.body
+            };
+            message.success('The post has been edited successfully');
+            return ReadablesAPI.editPostsAPI(payload, this.state.editPostId);
+        });
+    };
 
     hide = () => {
         this.setState({
@@ -65,52 +115,80 @@ class PostDetailComponent extends Component {
         });
     };
 
+    editPost = (id) => {
+        const {posts} = this.props.posts.posts;
+        const item = posts.find(f => f.id === id);
+        if (item) {
+            this.props.form.setFieldsValue({
+                title: item.title,
+                body: item.body,
+                author: item.author,
+                category: item.category
+            });
+            this.setState({
+                editPostId: item.id,
+                isEditMode: true
+            })
+        }
+    };
+
     render() {
         const {getFieldDecorator} = this.props.form;
-        const {singlePost, singlePostComments} = this.state;
-
-        if (!singlePost) {
+        const {singlePost, singlePostComments, isEditMode, isCommentMode} = this.state;
+        const {categories} = this.props.posts.categories;
+        if (!singlePost && !categories) {
             return ("Loading");
-        } else if (singlePost) {
+        } else {
             return (
                 <div>
                     <Row>
                         <Col span={12}>
                             <Card title={singlePost.title} width={400}
                                   extra={<div>
-                                      <a onClick={() => this.editPost}>Edit</a><Divider type="vertical"/>
-                                      <a onClick={() => this.deletePost(singlePost.id)}>Delete</a></div>}>
+                                      <a onClick={() => this.editPost(singlePost.id)}>Edit</a><Divider type="vertical"/>
+                                      <a onClick={() => this.deletePost(singlePost.id)}>Delete</a><Divider
+                                      type="vertical"/>
+                                      <a onClick={() => this.commentPost(true)}>Comment</a>
+                                  </div>}>
                                 {singlePost.body}
                                 <Divider/>
                                 author: {singlePost.author}
-                                Date created: {singlePost.timestamp}
-                                <Popover
-                                    content={<div>
-                                        <Form onSubmit={this.submitComment}>
-                                            <FormItem>
-                                                {getFieldDecorator('comment', {
-                                                    //rules: [{required: true, message: 'Please select a category'}],
-                                                })(
-                                                    <Input placeholder="insert your comment"/>
-                                                )}
-                                            </FormItem>
-                                        </Form>
+                                Date created: {moment(singlePost.timestamp).format(dateFormat)}
 
-                                        <Button type="primary" htmlType="submit">Submit</Button>
-                                    </div>}
-                                    title="Comment this post!"
-                                    visible={this.state.visible}
-                                    onVisibleChange={this.handleVisibleChange}>
-                                    <Button htmlType="button">Comment!</Button>
-                                </Popover>
+                                <Divider/>
 
+
+                                {isCommentMode && (
+                                    <Form onSubmit={this.handleSubmitComment} className="login-form">
+                                        <FormItem>
+                                            {getFieldDecorator('body', {
+                                                rules: [{required: true, message: 'Please insert a comment'}],
+                                            })(
+                                                <TextArea placeholder="Your comment" rows={4}/>
+                                            )}
+                                        </FormItem>
+                                        <FormItem>
+                                            {getFieldDecorator('author', {
+                                                rules: [{required: true, message: 'Please insert an author'}],
+                                            })(
+                                                <Input placeholder="Who are you?"/>
+                                            )}
+                                        </FormItem>
+                                        <div>
+                                        <Button htmlType="submit" type="primary">Post a Comment</Button>
+                                        <Button htmlType="button" type="default"
+                                                onClick={() => this.commentPost(false)}>Cancel</Button>
+                                        </div>
+                                    </Form>
+                                )}
                                 <List
                                     itemLayout="horizontal"
                                     dataSource={singlePostComments}
-                                    renderItem={item => (
-                                        <List.Item actions={[<a onClick={() => this.editPost(item.id)}>EDIT</a>]}>
+                                    renderItem={comment => (
+                                        <List.Item
+                                            actions={[<a onClick={() => this.editPost(comment.id)}>EDIT</a>]}>
                                             <List.Item.Meta
-                                                description={item.body}
+                                                description={comment.body}
                                             />
                                         </List.Item>
                                     )}
@@ -118,18 +196,59 @@ class PostDetailComponent extends Component {
 
                             </Card>
                         </Col>
-                        <Col span={12}>
-                            Edit Post
+                        {isEditMode && (
+                            <div>
+                                <Col span={12}>
+                                    Edit Post
+                                    <Form onSubmit={this.handleSubmit(singlePost.id)} className="login-form">
+                                        <FormItem>
+                                            {getFieldDecorator('title', {
+                                                rules: [{required: true, message: 'Please insert a title'}],
+                                            })(
+                                                <Input placeholder="Your post title"/>
+                                            )}
+                                        </FormItem>
+                                        <FormItem>
+                                            {getFieldDecorator('body', {
+                                                rules: [{required: true, message: 'Please insert a post body'}],
+                                            })(
+                                                <TextArea placeholder="Your post body context" rows={4}/>
+                                            )}
+                                        </FormItem>
+                                        <FormItem>
+                                            {getFieldDecorator('author', {
+                                                rules: [{required: true, message: 'Please insert an author'}],
+                                            })(
+                                                <Input placeholder="Who are you?"/>
+                                            )}
+                                        </FormItem>
+                                        <FormItem>
+                                            {getFieldDecorator('category', {
+                                                rules: [{required: true, message: 'Please select a category'}],
+                                            })(
+                                                <Select placeholder="Select Category">
+                                                    {categories.map(item =>
+                                                        <Option key={item.name}
+                                                                value={item.name}>{item.name}</Option>
+                                                    )}
+                                                </Select>
+                                            )}
 
-                        </Col>
+                                        </FormItem>
+                                        <Button htmlType="submit" type="primary">Edit Post</Button>
+                                    </Form>
+                                </Col>
+                            </div>
+                        )}
                     </Row>
                 </div>
             );
 
-
         }
     }
 }
+
+const PostDetailComponentForm = Form.create()(PostDetailComponent);
 
 function mapStateToProps(posts, categories) {
     return {posts: posts, categories: categories}
@@ -139,4 +258,5 @@ function mapDispatchToProps(dispatch) {
     return bindActionCreators(actionCreators, dispatch);
 }
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(PostDetailComponent));
+export default withRouter(connect(mapStateToProps,
+    mapDispatchToProps)(PostDetailComponentForm));

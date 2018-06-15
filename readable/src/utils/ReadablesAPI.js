@@ -82,8 +82,14 @@ export function editPostsAPI(values, post_id) {
  */
 
 export function deletePostsAPI(key) {
-    return fetch(`${url}/posts/${key}`, {method: 'DELETE', headers})
-        .then(res => res.json())
+    return fetch(`${url}/posts/${key}`, {
+        method: 'DELETE',
+        headers,
+        body: JSON.stringify({
+            deleted: true,
+            parentDeleted: true
+        })
+    }).then(res => res.json())
         .catch(err => err);
 
 }
@@ -134,8 +140,11 @@ export function thumbsdownPostAPI(key) {
 export function getCommentsAPI(comment_id) {
     return fetch(`${url}/comments/${comment_id}`, {
         method: 'GET', headers
-    }).then(res => res.json())
-        .catch(err => err);
+    }).then(res => {
+        return res.json()
+    }).catch(err => {
+        return err
+    });
 }
 
 /**
@@ -197,6 +206,22 @@ export function deleteCommentsAPI(comment_id) {
     }).then(res => res.json())
         .catch(err => err);
 }
+
+/**
+ * POST COMMENT
+ * @param payload
+ * @returns {Promise<Response>}
+ */
+
+export function createCommentsAPI(payload) {
+    return fetch(`${url}/comments`, {
+        method: 'POST', headers, body: JSON.stringify({
+            payload
+        })
+    }).then(res => res.json())
+        .catch(err => err);
+}
+
 
 
 

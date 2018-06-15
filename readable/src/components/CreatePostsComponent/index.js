@@ -54,6 +54,7 @@ class CreatePostsComponent extends Component {
     };
 
     editPost = (id) => {
+
         const {posts} = this.props.posts.posts;
         const item = posts.find(f => f.id === id);
         if (item) {
@@ -62,11 +63,10 @@ class CreatePostsComponent extends Component {
                 body: item.body,
                 author: item.author,
                 category: item.category
-            });
-            this.setState({
-                editPostId: item.id,
+            }, this.setState({
                 editMode: true
-            })
+            }));
+
         }
     };
 

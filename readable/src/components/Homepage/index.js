@@ -7,6 +7,9 @@ import {Link, withRouter} from "react-router-dom";
 import PropTypes from 'prop-types';
 import {bindActionCreators} from "redux";
 import * as actionCreators from "../../actions";
+import moment from 'moment'
+
+const dateFormat = 'MM/DD/YYYY';
 
 const {Header, Content, Footer} = Layout;
 
