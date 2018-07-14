@@ -138,7 +138,7 @@ export function thumbsdownPostAPI(key) {
  */
 
 export function getCommentsAPI(comment_id) {
-    return fetch(`${url}/comments/${comment_id}`, {
+    return fetch(`${url}/posts/${comment_id}/comments`, {
         method: 'GET', headers
     }).then(res => {
         return res.json()

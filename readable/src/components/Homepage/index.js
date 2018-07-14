@@ -1,5 +1,20 @@
 import React, {Component} from 'react';
-import {Layout, Menu, Breadcrumb, Card, Badge, Tag, Row, Col, Divider, Button, Popover, Input, Icon} from 'antd';
+import {
+    Layout,
+    Menu,
+    Breadcrumb,
+    Card,
+    Badge,
+    Tag,
+    Row,
+    Col,
+    Divider,
+    Button,
+    Popover,
+    Input,
+    Icon,
+    Select
+} from 'antd';
 import {connect} from "react-redux";
 import {addPostsAction, sendCategories, postThumbsupFromAPI} from '../../actions';
 import _ from 'lodash';
@@ -22,12 +37,21 @@ class Homepage extends Component {
         }
 
     }
+
     thumbsUpPost = (key) => {
         this.props.postThumbsupFromAPI(key);
     };
 
     thumbsDownPost = (key) => {
         this.props.postThumbsdownFromAPI(key);
+    };
+
+    sortByTimestamp = (posts) => {
+        return posts.sort((a, b) => (a.timestamp < b.timestamp));
+    };
+    sortByScore = (posts) => {
+        return posts.sort((a, b) => (a.voteScore < b.voteScore));
+
     };
 
 
@@ -41,6 +65,8 @@ class Homepage extends Component {
         else if (posts) {
             return (
                 <div>
+                    <Button onClick={() => this.sortByTimestamp(posts)}>Sort by timestamp</Button>
+                    <Button onClick={() => this.sortByScore(posts)}>Sort by score</Button>
                     <Row gutter={24}>
                         {posts.map((item) => (
                             <Col span={12} key={item.id}>

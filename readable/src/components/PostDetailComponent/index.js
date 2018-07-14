@@ -50,7 +50,7 @@ class PostDetailComponent extends Component {
     handleSubmitComment = (e, post_id) => {
         e.preventDefault();
 
-        this.props.form.validateFields((err, values) => {
+        this.props.form.getFieldsValue(values => {
             let payload = {
                 id: helpers.guid(),
                 timestamp: new Date(),
@@ -115,19 +115,18 @@ class PostDetailComponent extends Component {
         });
     };
 
-    editPost = (id) => {
-        const {posts} = this.props.posts.posts;
-        const item = posts.find(f => f.id === id);
+    editComment = (id) => {
+        const {singlePostComments} = this.state;
+        const item = singlePostComments.find(f => f.id === id);
         if (item) {
             this.props.form.setFieldsValue({
-                title: item.title,
-                body: item.body,
-                author: item.author,
-                category: item.category
+                comment_body: item.body,
+                comment_author: item.author
             });
             this.setState({
-                editPostId: item.id,
-                isEditMode: true
+                editCommentId: item.id,
+                isEditMode: false,
+                isCommentMode: true
             })
         }
     };
@@ -148,7 +147,7 @@ class PostDetailComponent extends Component {
                                       <a onClick={() => this.editPost(singlePost.id)}>Edit</a><Divider type="vertical"/>
                                       <a onClick={() => this.deletePost(singlePost.id)}>Delete</a><Divider
                                       type="vertical"/>
-                                      <a onClick={() => this.commentPost(true)}>Comment</a>
+                                      <a onClick={() => this.commentPost(true)}>Add Comment</a>
                                   </div>}>
                                 {singlePost.body}
                                 <Divider/>
@@ -161,14 +160,14 @@ class PostDetailComponent extends Component {
                                 {isCommentMode && (
                                     <Form onSubmit={this.handleSubmitComment} className="login-form">
                                         <FormItem>
-                                            {getFieldDecorator('body', {
+                                            {getFieldDecorator('comment_body', {
                                                 rules: [{required: true, message: 'Please insert a comment'}],
                                             })(
                                                 <TextArea placeholder="Your comment" rows={4}/>
                                             )}
                                         </FormItem>
                                         <FormItem>
-                                            {getFieldDecorator('author', {
+                                            {getFieldDecorator('comment_author', {
                                                 rules: [{required: true, message: 'Please insert an author'}],
                                             })(
                                                 <Input placeholder="Who are you?"/>
@@ -181,12 +180,15 @@ class PostDetailComponent extends Component {
                                         </div>
                                     </Form>
                                 )}
+                                <Divider> <h4 style={{color:'blue', fontWeight:'400', textTransform: 'uppercase'}}>Comments</h4></Divider>
+
                                 <List
                                     itemLayout="horizontal"
                                     dataSource={singlePostComments}
                                     renderItem={comment => (
                                         <List.Item
-                                            actions={[<a onClick={() => this.editPost(comment.id)}>EDIT</a>]}>
+                                            actions={[<a onClick={() => this.editComment(comment.id)}>Edit</a>,
+                                                <a onClick={() => this.deleteComment(comment.id)}>Delete</a>]}>
                                             <List.Item.Meta
                                                 description={comment.body}
                                             />
