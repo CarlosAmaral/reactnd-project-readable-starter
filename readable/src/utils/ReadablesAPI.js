@@ -183,7 +183,7 @@ export function thumbsDownCommentsAPI(comment_id) {
  * @param comment_id
  * @returns {Promise<Response>}
  */
-export function editCommentsAPI(values, comment_id) {
+export function editCommentsAPI(comment_id, values) {
     return fetch(`${url}/comments/${comment_id}`, {
         method: 'PUT', headers, body: JSON.stringify({
             body: values.body,
@@ -215,13 +215,11 @@ export function deleteCommentsAPI(comment_id) {
 
 export function createCommentsAPI(payload) {
     return fetch(`${url}/comments`, {
-        method: 'POST', headers, body: JSON.stringify({
-            payload
-        })
+        method: 'POST', headers,
+        body: JSON.stringify(payload)
     }).then(res => res.json())
         .catch(err => err);
 }
-
 
 
 

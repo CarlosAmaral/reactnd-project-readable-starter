@@ -47,36 +47,56 @@ class PostDetailComponent extends Component {
 
     }
 
-    handleSubmitComment = (e, post_id) => {
+    handleSubmitComment = (e) => {
         e.preventDefault();
+        const {post_id} = this.props.match.params;
+        const {editCommentId, isCommentModeInEditMode} = this.state;
 
-        this.props.form.getFieldsValue(values => {
-            let payload = {
-                id: helpers.guid(),
-                timestamp: new Date(),
-                body: values.body,
-                author: values.author,
-                parentId: post_id
-            };
-            message.success('The post has been edited successfully');
-            return ReadablesAPI.createCommentsAPI(payload);
-        });
+        if (isCommentModeInEditMode) {
+            this.props.form.validateFields((error, values) => {
+                let payload = {
+                    timestamp: new Date(),
+                    body: values.comment_body
+                };
+                return ReadablesAPI.editCommentsAPI(editCommentId, payload);
+            })
+
+        } else {
+            this.props.form.validateFields((error, values) => {
+                let payload = {
+                    id: helpers.guid(),
+                    timestamp: new Date(),
+                    body: values.comment_body,
+                    author: values.comment_author,
+                    parentId: post_id
+                };
+                message.success('The comment has been added successfully');
+                return ReadablesAPI.createCommentsAPI(payload);
+            });
+        }
+
     };
+
+    cancelPostEdition = () => this.setState({isEditMode: false})
+
 
     editPost = (id) => {
         const {posts} = this.props.posts.posts;
         const item = posts.find(f => f.id === id);
         if (item) {
-            this.props.form.setFieldsValue({
-                title: item.title,
-                body: item.body,
-                author: item.author,
-                category: item.category
-            });
             this.setState({
                 editPostId: item.id,
-                editMode: true
-            })
+                isEditMode: true
+            }, () => {
+                if (this.state.isEditMode) {
+                    return this.props.form.setFieldsValue({
+                        title: item.title,
+                        body: item.body,
+                        author: item.author,
+                        category: item.category
+                    })
+                }
+            });
         }
     };
     deletePost = (post_id) => {
@@ -86,16 +106,17 @@ class PostDetailComponent extends Component {
             }
         })
     };
+    deleteComment = (comment_id) => {
+        ReadablesAPI.deleteCommentsAPI(comment_id).then(res => {
+            if (res) {
+                message.success("Post has been deleted!");
+            }
+        })
+    };
 
     commentPost = (bool) => {
         this.setState({isCommentMode: bool})
-    }
-
-    /*
-        handleVisibleChange = (visible) => {
-            this.setState({visible});
-        }
-    */
+    };
 
     handleSubmit = (e) => {
         e.preventDefault();
@@ -109,32 +130,31 @@ class PostDetailComponent extends Component {
         });
     };
 
-    hide = () => {
-        this.setState({
-            visible: false,
-        });
-    };
 
     editComment = (id) => {
         const {singlePostComments} = this.state;
         const item = singlePostComments.find(f => f.id === id);
         if (item) {
-            this.props.form.setFieldsValue({
-                comment_body: item.body,
-                comment_author: item.author
-            });
             this.setState({
                 editCommentId: item.id,
-                isEditMode: false,
-                isCommentMode: true
+                isCommentMode: true,
+                isCommentModeInEditMode: true
+            }, () => {
+                if (this.state.isCommentMode) {
+                    return this.props.form.setFieldsValue({
+                        comment_body: item.body,
+                        comment_author: item.author
+                    })
+                }
             })
         }
     };
 
     render() {
         const {getFieldDecorator} = this.props.form;
-        const {singlePost, singlePostComments, isEditMode, isCommentMode} = this.state;
+        const {singlePost, singlePostComments, isEditMode, isCommentMode, isCommentModeInEditMode} = this.state;
         const {categories} = this.props.posts.categories;
+        //this.props.form.getFieldDecorator('comment_body', 'comment_author', 'title', 'body', 'author', 'category', {initialValue: {}})
         if (!singlePost && !categories) {
             return ("Loading");
         } else {
@@ -156,31 +176,9 @@ class PostDetailComponent extends Component {
 
                                 <Divider/>
 
-
-                                {isCommentMode && (
-                                    <Form onSubmit={this.handleSubmitComment} className="login-form">
-                                        <FormItem>
-                                            {getFieldDecorator('comment_body', {
-                                                rules: [{required: true, message: 'Please insert a comment'}],
-                                            })(
-                                                <TextArea placeholder="Your comment" rows={4}/>
-                                            )}
-                                        </FormItem>
-                                        <FormItem>
-                                            {getFieldDecorator('comment_author', {
-                                                rules: [{required: true, message: 'Please insert an author'}],
-                                            })(
-                                                <Input placeholder="Who are you?"/>
-                                            )}
-                                        </FormItem>
-                                        <div>
-                                        <Button htmlType="submit" type="primary">Post a Comment</Button>
-                                        <Button htmlType="button" type="default"
-                                                onClick={() => this.commentPost(false)}>Cancel</Button>
-                                        </div>
-                                    </Form>
-                                )}
-                                <Divider> <h4 style={{color:'blue', fontWeight:'400', textTransform: 'uppercase'}}>Comments</h4></Divider>
+                                <Divider><h4
+                                    style={{color: 'blue', fontWeight: '400', textTransform: 'uppercase'}}>Comments</h4>
+                                </Divider>
 
                                 <List
                                     itemLayout="horizontal"
@@ -196,13 +194,44 @@ class PostDetailComponent extends Component {
                                     )}
                                 />
 
+                                {isCommentMode && (
+                                    <Form onSubmit={this.handleSubmitComment}
+                                          className="login-form">
+                                        <FormItem>
+                                            {getFieldDecorator('comment_body', {
+                                                //initialValue: 'wtv',
+                                                rules: [{required: true, message: 'Please insert a comment'}],
+                                            })(
+                                                <TextArea placeholder="Your comment" rows={4}/>
+                                            )}
+                                        </FormItem>
+                                        <FormItem>
+                                            {getFieldDecorator('comment_author', {
+                                                //initialValue: 'kewl',
+                                                rules: [{required: true, message: 'Please insert an author'}],
+                                            })(
+                                                <Input disabled={isCommentModeInEditMode} placeholder="Who are you?"/>
+                                            )}
+                                        </FormItem>
+                                        <div>
+                                            {isCommentModeInEditMode ?
+                                                <Button htmlType="submit" type="primary">Update Comment</Button>
+                                                :
+                                                <Button htmlType="submit" type="primary">Post a Comment</Button>
+                                            }
+                                            <Button htmlType="button" type="default"
+                                                    onClick={() => this.commentPost(false)}>Cancel</Button>
+                                        </div>
+                                    </Form>
+                                )}
+
                             </Card>
                         </Col>
                         {isEditMode && (
                             <div>
                                 <Col span={12}>
                                     Edit Post
-                                    <Form onSubmit={this.handleSubmit(singlePost.id)} className="login-form">
+                                    <Form onSubmit={this.handleSubmit} className="login-form">
                                         <FormItem>
                                             {getFieldDecorator('title', {
                                                 rules: [{required: true, message: 'Please insert a title'}],
@@ -238,6 +267,8 @@ class PostDetailComponent extends Component {
 
                                         </FormItem>
                                         <Button htmlType="submit" type="primary">Edit Post</Button>
+                                        <Button htmlType="button" type="default"
+                                                onClick={this.cancelPostEdition}>Cancel</Button>
                                     </Form>
                                 </Col>
                             </div>
