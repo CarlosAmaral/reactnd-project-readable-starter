@@ -162,6 +162,7 @@ export function thumbsUpCommentsAPI(comment_id) {
         .catch(err => err);
 }
 
+
 /**
  * DOWNVOTE COMMENT
  * @param comment_id
